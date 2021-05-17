@@ -1,4 +1,5 @@
 import {
+  createSelector,
   createSlice,
   PayloadAction,
   createAsyncThunk,
@@ -144,3 +145,13 @@ export const selectAllPosts = (state: RootState) => state.posts.posts;
 
 export const selectPostById = (state: RootState, postId: string) =>
   state.posts.posts.find((post) => post.id === postId);
+
+export const selectPostsByUser = createSelector(
+  // In this case, we know that we need the array of all posts and the user ID
+  // as the two arguments for our output selector. We can reuse our existing
+  // selectAllPosts selector to extract the posts array.
+  // Since the user ID is the second argument we're passing into selectPostsByUser,
+  //  we can write a small selector that just returns userId.
+  [selectAllPosts, (state: RootState, userId: string) => userId],
+  (posts, userId) => posts.filter((post) => post.user === userId)
+);
